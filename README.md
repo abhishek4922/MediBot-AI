@@ -2,7 +2,7 @@
 
 ## 🖼️ Chatbot UI Preview
 
-![Chat Screenshot](uiimg.jpg)
+![Chat Screenshot](assets/uiimg.jpg)
 
 The chatbot responds to medical queries using LLaMA and Pinecone vector search.
 
