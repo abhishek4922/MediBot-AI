@@ -1,56 +1,101 @@
-# Project Title
+# MediBot-AI: Medical Question Answering Chatbot
+
+MediBot-AI is a sophisticated, retrieval-augmented generation (RAG) based chatbot designed to answer medical questions. It leverages a local medical document (PDF) as its knowledge base, providing accurate and contextually relevant answers through a user-friendly web interface.
 
 ## 🖼️ Chatbot UI Preview
 
 ![Chat Screenshot](assets/uiimg.jpg)
 
-The chatbot responds to medical queries using LLaMA and Pinecone vector search.
+## ✨ Features
 
-## Description
+- **PDF Data Processing**: Extracts text directly from PDF documents in the `Data/` directory.
+- **Advanced Text Processing**: Splits documents into manageable chunks for efficient embedding.
+- **High-Quality Embeddings**: Utilizes Hugging Face Sentence Transformers to generate dense vector embeddings for semantic understanding.
+- **Efficient Vector Storage**: Stores and indexes embeddings in [Pinecone](https://www.pinecone.io/) for fast and scalable similarity searches.
+- **Powerful Language Model**: Uses the fast and powerful [Groq](https://groq.com/) API with LLaMA models to generate human-like responses.
+- **Retrieval-Augmented Generation (RAG)**: Employs a robust RAG pipeline orchestrated by [LangChain](https://www.langchain.com/) to retrieve relevant information before generating an answer.
+- **Interactive Web UI**: A simple and clean user interface built with Flask and basic HTML/CSS.
 
-[A brief explanation of what your project does and its purpose.]
+## ⚙️ How It Works
 
-## Features
+The project operates in two main stages:
 
-- [List key features or functionalities.]
-- [e.g., PDF data extraction]
-- [e.g., Text chunking and embedding]
-- [e.g., Question answering based on medical data]
+1.  **Data Indexing (`store_index.py`)**:
+    *   The medical PDF from the `/Data` folder is loaded and parsed.
+    *   The extracted text is divided into smaller, coherent chunks.
+    *   Each chunk is converted into a numerical vector (embedding) using Sentence Transformers.
+    *   These embeddings are then uploaded and indexed in a Pinecone vector database. This is a one-time process for each new dataset.
 
-## Installation
+2.  **Inference & Chat (`app.py`)**:
+    *   The Flask application starts, initializing the connection to Pinecone and the Groq LLM.
+    *   When you ask a question, the app converts your query into an embedding.
+    *   This embedding is used to search the Pinecone index for the most similar (i.e., most relevant) text chunks from the medical book.
+    *   The retrieved chunks and your original question are passed to the Groq LLM within a carefully crafted prompt.
+    *   The LLM generates a final answer based on the provided context and serves it to you in the chat interface.
 
-[Instructions on how to set up and install the project. This will likely involve Python, pip, and specific libraries.]
+## 🚀 Getting Started
+
+Follow these instructions to set up and run the project on your local machine.
 
 ### Prerequisites
 
-- [List any software or tools required, e.g., Python version]
+- Python 3.8+
+- A [Pinecone API Key](https://www.pinecone.io/)
+- A [Groq API Key](https://console.groq.com/keys)
 
-### Steps
+### Installation & Setup
 
-1.  Clone the repository:
+1.  **Clone the Repository**
     ```bash
     git clone https://github.com/your-username/MediBot-AI.git
     cd MediBot-AI
     ```
-2.  Create a virtual environment (recommended):
+
+2.  **Create a Virtual Environment**
+    It's recommended to use a virtual environment to manage dependencies.
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
     ```
-3.  Install dependencies:
+
+3.  **Install Dependencies**
     ```bash
     pip install -r requirements.txt
     ```
-4.  [Any other setup steps, e.g., placing PDF files in the `Data/` directory, running `store_index.py` if applicable.]
+
+4.  **Set Up Environment Variables**
+    Create a file named `.env` in the root directory of the project and add your API keys:
+    ```
+    PINECONE_API_KEY="YOUR_PINECONE_API_KEY"
+    GROQ_API_KEY="YOUR_GROQ_API_KEY"
+    ```
+
+5.  **Add Your Data**
+    Place your medical PDF file inside the `Data/` directory. The application is configured to load the first PDF it finds in this folder.
+
+6.  **Create the Vector Store**
+    Run the `store_index.py` script to process your PDF and populate the Pinecone index. This may take a few minutes depending on the size of your document.
+    ```bash
+    python store_index.py
+    ```
 
 ## Usage
 
-[How to use your application once it's installed. This might include running the Flask app, interacting with the chatbot, etc.]
+Once the setup is complete, you can start the chatbot application.
 
-## Contributing
+1.  **Run the Flask App**
+    ```bash
+    python app.py
+    ```
 
-[Guidelines for how others can contribute to your project.]
+2.  **Access the Chatbot**
+    Open your web browser and navigate to:
+    ```
+    http://127.0.0.1:8080
+    ```
+
+You can now start asking medical questions!
 
 ## License
 
-[Information about the project's license.]
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
